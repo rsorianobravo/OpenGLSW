@@ -52,6 +52,15 @@ int main()
 	// ------ Specify the dimensions of the viewport (x,y,x+width, y+height)
 	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
+	// ------ Specify the color of the background
+	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+	// ------ Clean the BackBuffer and assing the new color to it
+	glClear(GL_COLOR_BUFFER_BIT);
+	// ------ Swap the BackBuffer with the FrontBuffer
+	glfwSwapBuffers(window);
+
+
+
 	// ------
 	// ------
 	// ------ Main Loop
