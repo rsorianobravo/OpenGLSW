@@ -46,8 +46,12 @@ int main()
 	// ------ Important - Introduce the window into the current Context
 	glfwMakeContextCurrent(window);
 
-	// ------ 
+	// ------ Load GLAD so it configures OpenGL
+	gladLoadGL();
 	
+	// ------ Specify the dimensions of the viewport (x,y,x+width, y+height)
+	glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+
 	// ------
 	// ------
 	// ------ Main Loop
