@@ -57,7 +57,7 @@ int main()
 	// ------ Clean the BackBuffer and assing the new color to it
 	glClear(GL_COLOR_BUFFER_BIT);
 	// ------ Swap the BackBuffer with the FrontBuffer
-	glfwSwapBuffers(window);
+	//glfwSwapBuffers(window);
 
 
 
@@ -69,12 +69,17 @@ int main()
 	{
 		// ------ Check update input 
 		//glfwSetWindowShouldClose(window, true);
+		
+		// ------ Check all the GLFW events
 		glfwPollEvents();
 	}
 
 	// ------ End Program
 	
+	// ------ Delete window before closing
 	glfwDestroyWindow(window);
+	
+	// ------ Terminate GLFW before closing
 	glfwTerminate();
 
 	// ------ Delete Program
