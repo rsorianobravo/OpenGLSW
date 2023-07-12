@@ -7,8 +7,10 @@ in vec3 color;
 
 void main()
 {
-	//FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);
+	// Frament when the vertices doesn't have color defined on each vertex
+	// FragColor = vec4(0.8f, 0.3f, 0.02f, 1.0f);
 
+	// Use the color vector defined in the Vertex that define the positions 4 to 6 in the Vertices. [x,y,z][r,g,b] 
 	FragColor = vec4(color, 1.0f);
 
 }
