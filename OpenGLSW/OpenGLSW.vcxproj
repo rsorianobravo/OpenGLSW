@@ -152,6 +152,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="libs.h" />
+    <ClInclude Include="shaderClass.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="default.frag" />
