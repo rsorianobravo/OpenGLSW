@@ -7,6 +7,70 @@
 #include"VBO.h"
 #include"EBO.h"
 
+#include<stb/stb_image.h>
+#include "libs.h"
+
+
+/*********************************************************************************************/
+
+// ------ Talk about sending sizeof pointers and errors
+void updateInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, GLFW_TRUE);
+	}
+}
+
+/*********************************************************************************************/
+
+void updateInput(GLFWwindow* window, glm::vec3& position, glm::vec3& rotation, glm::vec3& scale)
+{
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+	{
+		position.z -= 0.001f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+	{
+		position.z += 0.001f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		position.x -= 0.001f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+	{
+		position.x += 0.001f;
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+	{
+		rotation.y -= 0.01f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+	{
+		rotation.y += 0.01f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS)
+	{
+		scale += 0.01f;
+	}
+	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+	{
+		scale -= 0.01f;
+	}
+}
+
+/*********************************************************************************************/
+
+// ------ method to calculate the frameBuffer
+void framebuffer_resize_callback(GLFWwindow* wimdow, int fbw, int fbh)
+{
+	glViewport(0, 0, fbw, fbh);
+}
+
+/*********************************************************************************************/
+
 /*
 //Vertex Shader Source Code
 const char* vertexShaderSource = "version 330 core\n"
@@ -48,7 +112,7 @@ GLfloat vertices[] =
 */
 
 /*
-// Vertices coordinates
+// Vertices coordinates for a Square
 GLfloat vertices[] =
 { //     COORDINATES     /        COLORS      /   TexCoord  //
 	-0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f,	 0.0f,0.0f,// Lower left corner
@@ -71,6 +135,7 @@ GLfloat vertices[] =
 };
 */
 
+/*
 //Create Vertices of an triangle
 GLfloat vertices[] =
 { //               COORDINATES                  /     COLORS           //
@@ -81,24 +146,36 @@ GLfloat vertices[] =
 	 0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,     0.9f, 0.45f, 0.17f, // Inner right
 	 0.0f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,     0.8f, 0.3f,  0.02f  // Inner down
 };
+*/
+
+// Vertices coordinates for a Square
+GLfloat vertices[] =
+{ //     COORDINATES     /        COLORS      /   TexCoord  ////
+	-0.5f, -0.5f, 0.0f,     1.0f, 0.0f, 0.0f, 	 0.0f,0.0f,	// Lower left corner// Lower left corner
+	-0.5f,  0.5f, 0.0f,     0.0f, 1.0f, 0.0f, 	 0.0f,1.0f,	// Upper left corner// Upper left corner
+	 0.5f,  0.5f, 0.0f,     0.0f, 0.0f, 1.0f, 	 1.0f,1.0f,	// Upper right corner// Upper right corner
+	 0.5f, -0.5f, 0.0f,     1.0f, 1.0f, 1.0f,  	 1.0f,0.0f	// Lower right corner// Lower right corner
+};
 
 
+/*
 GLuint indices[] =
 {
 	0,3,5,
 	3,2,4,
 	5,4,1
 };
+*/
 
 
-/*
+
 // Indices for vertices order
 GLuint indices[] =
 {
 	0, 2, 1, // Upper triangle
 	0, 3, 2 // Lower triangle
 };
-*/
+
 
 
 
@@ -109,8 +186,8 @@ GLuint indices[] =
 
 int main()
 {
-	const int WINDOW_WIDTH = 1920;
-	const int WINDOW_HEIGHT = 1280;
+	const int WINDOW_WIDTH = 800;
+	const int WINDOW_HEIGHT = 800;
 	int framebufferWidth = 0;
 	int framebufferHeight = 0;
 	
@@ -289,9 +366,9 @@ int main()
 	//VAO1.LinkVBO(VBO1, 0);
 
 	
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 6 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-	//	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	
 
 	// Unbind all to prevent accidentally modifying them
@@ -303,6 +380,40 @@ int main()
 	
 	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
 
+
+
+	// Texture
+	int widthImg;
+	int heightImg;
+	int numColCh;
+
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* bytes = stbi_load("images/container.png", &widthImg, &heightImg, &numColCh, 0);
+
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//float flatColor[] = {1.0f,1.0f,1.0f,1.0f};
+	//glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, flatcolor);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, widthImg, heightImg, 0, GL_RGBA, GL_UNSIGNED_BYTE, bytes);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	stbi_image_free(bytes);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	GLuint tex0Uni = glGetUniformLocation(shaderProgram.ID, "tex0");
+	shaderProgram.Activate();
+	glUniform1i(tex0Uni, 0);
+
 	// ------
 	// ------ Main Loop
 	// ------ Main while loop
@@ -312,21 +423,25 @@ int main()
 		//glfwSetWindowShouldClose(window, true);
 		
 		// ------ Specify the color of the background
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+		glClearColor(0.07f, 0.13f, 0.17f, 0.0f);
 		// ------ Clean the BackBuffer and assing the new color to it
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
 		glUniform1f(uniID, 0.3f);
+		glBindTexture(GL_TEXTURE_2D, texture);
 
+		
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 		
 		// Draw Primitives, number of indices, datatype of indices, index of indices
-		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
+
+		
 
 
 
@@ -334,6 +449,10 @@ int main()
 		glfwSwapBuffers(window);
 
 
+		
+
+		// ------ Update
+		updateInput(window);
 
 		// ------ Check all the GLFW events
 		glfwPollEvents();
@@ -344,6 +463,7 @@ int main()
 	VBO1.Delete();
 	EBO1.Delete();
 	shaderProgram.Delete();
+	glDeleteTextures(1, &texture);
 
 
 
