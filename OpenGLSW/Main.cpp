@@ -97,8 +97,8 @@ GLuint indices[] =
 
 int main()
 {
-	const int WINDOW_WIDTH = 800;
-	const int WINDOW_HEIGHT = 800;
+	const int WINDOW_WIDTH = 1920;
+	const int WINDOW_HEIGHT = 1280;
 	int framebufferWidth = 0;
 	int framebufferHeight = 0;
 	
