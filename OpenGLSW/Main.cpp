@@ -299,7 +299,10 @@ int main()
 	VBO1.Unbind();
 	EBO1.Unbind();
 
-	// ------
+	// ------ Uniforms
+	
+	GLuint uniID = glGetUniformLocation(shaderProgram.ID, "scale");
+
 	// ------
 	// ------ Main Loop
 	// ------ Main while loop
@@ -315,7 +318,8 @@ int main()
 
 		// Tell OpenGL which Shader Program we want to use
 		shaderProgram.Activate();
-		
+		glUniform1f(uniID, -0.9f);
+
 		// Bind the VAO so OpenGL knows to use it
 		VAO1.Bind();
 		
