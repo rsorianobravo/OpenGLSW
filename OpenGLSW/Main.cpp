@@ -57,7 +57,7 @@ int main()
 	// ------ Clean the BackBuffer and assing the new color to it
 	glClear(GL_COLOR_BUFFER_BIT);
 	// ------ Swap the BackBuffer with the FrontBuffer
-	//glfwSwapBuffers(window);
+	glfwSwapBuffers(window);
 
 
 
